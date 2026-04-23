@@ -1,0 +1,218 @@
+@import "tailwindcss";
+
+@theme inline {
+  /* Base */
+  --color-base: #020617;
+  --color-surface: rgba(255, 255, 255, 0.04);
+  --color-surface-hover: rgba(255, 255, 255, 0.07);
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border-strong: rgba(255, 255, 255, 0.14);
+
+  /* Accents */
+  --color-violet: #7c3aed;
+  --color-violet-glow: rgba(124, 58, 237, 0.4);
+  --color-cyan: #06b6d4;
+  --color-cyan-glow: rgba(6, 182, 212, 0.3);
+
+  /* Gold */
+  --color-gold: #f59e0b;
+
+  /* Text */
+  --color-text-primary: #f1f5f9;
+  --color-text-muted: #64748b;
+  --color-text-dim: #334155;
+
+  /* Status */
+  --color-danger: #ef4444;
+  --color-success: #22c55e;
+
+  /* Fonts */
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* ── Reset ─────────────────────────────────────────────── */
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--color-base);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  overscroll-behavior: none;
+}
+
+/* ── Mesh gradient background (static — no GPU blur) ───── */
+
+.mesh-bg {
+  background-image:
+    radial-gradient(ellipse 60% 50% at 0% 0%,   rgba(124, 58, 237, 0.13) 0%, transparent 100%),
+    radial-gradient(ellipse 50% 40% at 100% 100%, rgba(6, 182, 212, 0.10) 0%, transparent 100%);
+}
+
+/* ── Glassmorphism utilities ────────────────────────────── */
+
+.glass {
+  background: var(--color-surface);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--color-border);
+}
+
+/* Primary action — violet-tinted glass with inner glow */
+.glass-btn-primary {
+  background: rgba(124, 58, 237, 0.12);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(124, 58, 237, 0.35);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.10),
+    0 0 32px rgba(124, 58, 237, 0.20);
+  transition: box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.glass-btn-primary:active {
+  background: rgba(124, 58, 237, 0.18);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 0 48px rgba(124, 58, 237, 0.30);
+}
+
+/* Secondary — neutral glass */
+.glass-btn {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--color-border-strong);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 0 16px rgba(0, 0, 0, 0.20);
+  transition: background 0.2s ease;
+}
+
+.glass-btn:active {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ── Text utilities ─────────────────────────────────────── */
+
+/* Subtle glow on headings */
+.text-glow-violet {
+  text-shadow: 0 0 40px rgba(124, 58, 237, 0.5);
+}
+
+/* ── Dynamic mesh blobs ─────────────────────────────────── */
+/*
+ * will-change: transform promotes each blob to its own GPU layer.
+ * The animation then only moves a pre-rendered texture in the compositor —
+ * no repaint, no re-blur per frame. Safe on integrated GPUs.
+ * Kept at 16rem + blur(40px) to keep GPU textures small (~310px each).
+ */
+.mesh-blob {
+  position: absolute;
+  width: 16rem;
+  height: 16rem;
+  border-radius: 50%;
+  filter: blur(40px);
+  will-change: transform;
+  transition: background-color 2s ease-in-out;
+}
+
+/* Each blob drifts at a different speed and direction for an organic feel */
+.mesh-blob-1 {
+  animation: blob-drift-1 11s ease-in-out infinite alternate;
+}
+.mesh-blob-2 {
+  animation: blob-drift-2 14s ease-in-out infinite alternate;
+}
+.mesh-blob-3 {
+  animation: blob-drift-3 9s ease-in-out infinite alternate;
+}
+
+@keyframes blob-drift-1 {
+  from { transform: translate(0px,  0px); }
+  to   { transform: translate(38px, 28px); }
+}
+@keyframes blob-drift-2 {
+  from { transform: translate(0px,  0px); }
+  to   { transform: translate(-32px, 36px); }
+}
+@keyframes blob-drift-3 {
+  from { transform: translate(0px,  0px); }
+  to   { transform: translate(22px, -34px); }
+}
+
+/* ── Quiz card animations ───────────────────────────────── */
+
+@keyframes cards-exit {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to   { opacity: 0; transform: translateY(-20px) scale(0.97); }
+}
+
+@keyframes cards-enter {
+  from { opacity: 0; transform: translateY(20px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.animate-cards-exit {
+  animation: cards-exit 320ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate-cards-enter {
+  animation: cards-enter 320ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* ── Calibration screen ─────────────────────────────────── */
+
+@keyframes progress-fill {
+  from { width: 0%; }
+  to   { width: 100%; }
+}
+
+@keyframes calibration-fade-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes calibration-pulse {
+  0%, 100% { opacity: 0.5; }
+  50%       { opacity: 1; }
+}
+
+.animate-calibration-enter {
+  animation: calibration-fade-in 500ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate-progress-fill {
+  animation: progress-fill 2s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+}
+
+.animate-calibration-pulse {
+  animation: calibration-pulse 1.4s ease-in-out infinite;
+}
+
+/* ── Safe area ──────────────────────────────────────────── */
+
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 1rem);
+}
+
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+/* Pages that need both header clearance AND notch clearance */
+.pt-header-safe {
+  padding-top: calc(3.5rem + env(safe-area-inset-top, 0px));
+}
+
+/* Account for fixed bottom nav (60px) + home bar */
+.pb-nav-safe {
+  padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px));
+}
